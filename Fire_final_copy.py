@@ -70,21 +70,36 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 
 
 
+def download_dataset():
+    """Télécharge le dataset Kaggle si pas déjà présent."""
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    
+    api = KaggleApi()
+    api.set_config_value('username', st.secrets["kaggle"]["username"])
+    api.set_config_value('key', st.secrets["kaggle"]["key"])
+    api.authenticate()
+    
+    dataset = 'levitique/file-project'
+    path = './data'
+    os.makedirs(path, exist_ok=True)
+    
+    api.dataset_download_files(dataset, path=path, unzip=True)
+
+
 @st.cache_data
 def load_data():
+    # Télécharge automatiquement si les fichiers n'existent pas encore
     if not os.path.exists('./data/df_final.csv'):
-        os.makedirs('./data', exist_ok=True)
-        kaggle.api.authenticate()
-        kaggle.api.dataset_download_files(
-            'levitique/file-project',
-            path='./data',
-            unzip=True
-        )
+        download_dataset()
+    
     df_fires      = pd.read_csv('./data/df_final.csv')
     df_meteo      = pd.read_csv('./data/df_meteo.csv')
     df_population = pd.read_csv('./data/df_population.csv')
     df_vegetation = pd.read_csv('./data/df_vegetation.csv')
     return df_fires, df_meteo, df_population, df_vegetation
+
+    # Chargement automatique au démarrage
+    df_fires, df_meteo, df_population, df_vegetation = load_data()
 
 
 
