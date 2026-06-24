@@ -5,6 +5,7 @@
 import pandas as pd
 import streamlit as st
 import base64
+import os
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION PAGE
@@ -39,27 +40,57 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# IMPORT DATASET DEPUIS KAGGLE
+# IMPORT DATASET DEPUIS KAGGLE (API officielle — plus robuste)
 # Les identifiants ne sont JAMAIS écrits ici en clair.
-# Ils sont lus automatiquement depuis :
+# Ils sont lus depuis :
 #   - en local  : .streamlit/secrets.toml   (jamais poussé sur GitHub)
 #   - en cloud  : Streamlit Cloud > Settings > Secrets
+#
+# Format attendu dans secrets.toml :
+#   [kaggle]
+#   username = "ton_username"
+#   key = "ta_cle_api"
 # ══════════════════════════════════════════════════════════════════════════════
 
-from KaggleAPIConnection import KaggleAPIConnection
-
-@st.cache_data
+@st.cache_data(show_spinner="Chargement des données depuis Kaggle...")
 def load_data():
     """
-    Télécharge et charge df_final.csv depuis Kaggle.
-    @st.cache_data évite de retélécharger à chaque interaction utilisateur.
+    Télécharge df_final.csv depuis Kaggle si absent, puis le charge.
+    @st.cache_data garantit que ce bloc ne s'exécute qu'une seule fois
+    par session (et est réutilisé entre les utilisateurs sur le même serveur).
     """
-    conn = st.connection('kaggle', type=KaggleAPIConnection)
-    df_fires = conn.query('levitique/file-project', file='df_final.csv')
+    # Configure les credentials Kaggle via variables d'environnement
+    # (c'est la méthode attendue par la librairie kaggle officielle)
+    os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
+    os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
+
+    # Import différé : kaggle lit les variables d'environnement
+    # au moment de l'import, donc on importe APRÈS les avoir définies
+    from kaggle.api.kaggle_api_extended import KaggleApi
+
+    target_file = './data/df_final.csv'
+
+    if not os.path.exists(target_file):
+        os.makedirs('./data', exist_ok=True)
+        api = KaggleApi()
+        api.authenticate()
+        api.dataset_download_files(
+            'levitique/file-project',
+            path='./data',
+            unzip=True
+        )
+
+    df_fires = pd.read_csv(target_file)
     return df_fires
 
 
-df_fires = load_data()
+# Chargement réel — toute erreur ici est désormais visible à l'écran
+# au lieu de laisser un spinner tourner sans fin.
+try:
+    df_fires = load_data()
+except Exception as e:
+    st.error(f"❌ Erreur lors du chargement des données Kaggle : {e}")
+    st.stop()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
