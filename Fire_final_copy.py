@@ -48,10 +48,10 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 
 @st.cache_data
 def load_data():
-    os.environ['username'] = st.secrets["kaggle"]["username"]
-    os.environ["key"] = st.secrets["kaggle"]["key"]
+    os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
+    os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
     
-    import kaggle
+    
     
     if not os.path.exists('./data/df_final.csv'):
         os.makedirs('./data', exist_ok=True)
