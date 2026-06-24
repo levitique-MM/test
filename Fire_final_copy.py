@@ -70,64 +70,105 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 
 
 
-def download_dataset():
-    """Télécharge le dataset Kaggle si pas déjà présent."""
-    from kaggle.api.kaggle_api_extended import KaggleApi
+#def download_dataset():
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     """Télécharge le dataset Kaggle si pas déjà présent."""
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    from kaggle.api.kaggle_api_extended import KaggleApi
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api = KaggleApi()
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api.set_config_value('username', st.secrets["kaggle"]["username"])
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api.set_config_value('key', st.secrets["kaggle"]["key"])
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api.authenticate()
     
-    api = KaggleApi()
-    api.set_config_value('username', st.secrets["kaggle"]["username"])
-    api.set_config_value('key', st.secrets["kaggle"]["key"])
-    api.authenticate()
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    dataset = 'levitique/file-project'
+  #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#   path = './data'
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     os.makedirs(path, exist_ok=True)
     
-    dataset = 'levitique/file-project'
-    path = './data'
-    os.makedirs(path, exist_ok=True)
-    
-    api.dataset_download_files(dataset, path=path, unzip=True)
+  #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#   api.dataset_download_files(dataset, path=path, unzip=True)
 
 
 
-def download_dataset():
-    from kaggle.api.kaggle_api_extended import KaggleApi
+#def download_dataset():
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    from kaggle.api.kaggle_api_extended import KaggleApi
     
-    st.write("🟡 Authentification Kaggle...")
-    api = KaggleApi()
-    api.set_config_value('username', st.secrets["kaggle"]["username"])
-    api.set_config_value('key', st.secrets["kaggle"]["key"])
-    api.authenticate()
-    st.write("🟢 Authentifié avec succès")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟡 Authentification Kaggle...")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api = KaggleApi()
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api.set_config_value('username', st.secrets["kaggle"]["username"])
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     api.set_config_value('key', st.secrets["kaggle"]["key"])
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    api.authenticate()
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟢 Authentifié avec succès")
     
-    dataset = 'levitique/file-project'
-    path = './data'
-    os.makedirs(path, exist_ok=True)
+    #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+# dataset = 'levitique/file-project'
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     path = './data'
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     os.makedirs(path, exist_ok=True)
     
-    st.write("🟡 Téléchargement en cours (peut prendre plusieurs minutes)...")
-    api.dataset_download_files(dataset, path=path, unzip=True)
-    st.write("🟢 Téléchargement terminé")
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     st.write("🟡 Téléchargement en cours (peut prendre plusieurs minutes)...")
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     api.dataset_download_files(dataset, path=path, unzip=True)
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟢 Téléchargement terminé")
 
 
-@st.cache_data
-def load_data():
-    if not os.path.exists('./data/df_final.csv'):
-        st.write("🟡 Fichiers absents, lancement du téléchargement...")
-        download_dataset()
-    else:
-        st.write("🟢 Fichiers déjà présents en cache")
+#@st.cache_data
+#def load_data():
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#     if not os.path.exists('./data/df_final.csv'):
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#        st.write("🟡 Fichiers absents, lancement du téléchargement...")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#        download_dataset()
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    else:
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#        st.write("🟢 Fichiers déjà présents en cache")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟡 Lecture des CSV...")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    df_fires      = pd.read_csv('./data/df_final.csv')
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write(f"🟢 df_fires chargé : {len(df_fires)} lignes")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    df_meteo      = pd.read_csv('./data/df_meteo.csv')
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟢 df_meteo chargé")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    df_population = pd.read_csv('./data/df_population.csv')
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟢 df_population chargé")
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    st.write("🟢 df_vegetation chargé")
     
-    st.write("🟡 Lecture des CSV...")
-    df_fires      = pd.read_csv('./data/df_final.csv')
-    st.write(f"🟢 df_fires chargé : {len(df_fires)} lignes")
-    df_meteo      = pd.read_csv('./data/df_meteo.csv')
-    st.write("🟢 df_meteo chargé")
-    df_population = pd.read_csv('./data/df_population.csv')
-    st.write("🟢 df_population chargé")
-    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-    st.write("🟢 df_vegetation chargé")
-    
-    return df_fires, df_meteo, df_population, df_vegetation
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    return df_fires, df_meteo, df_population, df_vegetation
 
 
-    df_fires, df_meteo, df_population, df_vegetation = load_data()
+ #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+#    df_fires, df_meteo, df_population, df_vegetation = load_data()
 
 
 
@@ -135,7 +176,6 @@ def load_data():
 # ══════════════════════════════════════════════════════════════════════════════
 # PAGE 1 — INTRODUCTION
 # ══════════════════════════════════════════════════════════════════════════════
-
 if page == pages[0]:
     st.title(" Analyse des Feux de Forêt aux États-Unis (2000–2015)")
     st.write("### I. Présentation du projet")
