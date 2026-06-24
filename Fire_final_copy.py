@@ -86,20 +86,48 @@ def download_dataset():
     api.dataset_download_files(dataset, path=path, unzip=True)
 
 
+
+def download_dataset():
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    
+    st.write("🟡 Authentification Kaggle...")
+    api = KaggleApi()
+    api.set_config_value('username', st.secrets["kaggle"]["username"])
+    api.set_config_value('key', st.secrets["kaggle"]["key"])
+    api.authenticate()
+    st.write("🟢 Authentifié avec succès")
+    
+    dataset = 'levitique/file-project'
+    path = './data'
+    os.makedirs(path, exist_ok=True)
+    
+    st.write("🟡 Téléchargement en cours (peut prendre plusieurs minutes)...")
+    api.dataset_download_files(dataset, path=path, unzip=True)
+    st.write("🟢 Téléchargement terminé")
+
+
 @st.cache_data
 def load_data():
-    # Télécharge automatiquement si les fichiers n'existent pas encore
     if not os.path.exists('./data/df_final.csv'):
+        st.write("🟡 Fichiers absents, lancement du téléchargement...")
         download_dataset()
+    else:
+        st.write("🟢 Fichiers déjà présents en cache")
     
+    st.write("🟡 Lecture des CSV...")
     df_fires      = pd.read_csv('./data/df_final.csv')
+    st.write(f"🟢 df_fires chargé : {len(df_fires)} lignes")
     df_meteo      = pd.read_csv('./data/df_meteo.csv')
+    st.write("🟢 df_meteo chargé")
     df_population = pd.read_csv('./data/df_population.csv')
+    st.write("🟢 df_population chargé")
     df_vegetation = pd.read_csv('./data/df_vegetation.csv')
+    st.write("🟢 df_vegetation chargé")
+    
     return df_fires, df_meteo, df_population, df_vegetation
 
-    # Chargement automatique au démarrage
-    df_fires, df_meteo, df_population, df_vegetation = load_data()
+
+df_fires, df_meteo, df_population, df_vegetation = load_data()
 
 
 
