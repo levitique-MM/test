@@ -6,6 +6,8 @@ import pandas as pd
 import streamlit as st
 import base64
 import os
+import duckdb
+import kaggle 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION PAGE
@@ -38,34 +40,16 @@ st.sidebar.markdown(
 st.sidebar.title("──────")
 st.sidebar.write("**Liora - Datascientes 2025**")
 
+# ══════════════════════════════════════════════════════════════════════════════
+# IMPORT DATASET
+# ══════════════════════════════════════════════════════════════════════════════
 
-# ══════════════════════════════════════════════════════════════════════════════
-# IMPORT DATASET DEPUIS KAGGLE (API officielle — plus robuste)
-# Les identifiants ne sont JAMAIS écrits ici en clair.
-# Ils sont lus depuis :
-#   - en local  : .streamlit/secrets.toml   (jamais poussé sur GitHub)
-#   - en cloud  : Streamlit Cloud > Settings > Secrets
-#
-# Format attendu dans secrets.toml :
-#   [kaggle]
-#   username = "ton_username"
-#   key = "ta_cle_api"
-# ══════════════════════════════════════════════════════════════════════════════
 
 @st.cache_data(show_spinner="Chargement des données depuis Kaggle...")
 def load_data():
-    """
-    Télécharge df_final.csv depuis Kaggle si absent, puis le charge.
-    @st.cache_data garantit que ce bloc ne s'exécute qu'une seule fois
-    par session (et est réutilisé entre les utilisateurs sur le même serveur).
-    """
-    # Configure les credentials Kaggle via variables d'environnement
-    # (c'est la méthode attendue par la librairie kaggle officielle)
     os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
     os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
 
-    # Import différé : kaggle lit les variables d'environnement
-    # au moment de l'import, donc on importe APRÈS les avoir définies
     from kaggle.api.kaggle_api_extended import KaggleApi
 
     target_file = './data/df_final.csv'
@@ -80,18 +64,13 @@ def load_data():
             unzip=True
         )
 
-    df_fires = pd.read_csv(target_file)
+    # Ne charge QUE les colonnes utiles, pas tout le fichier (économise la RAM)
+    cols_utiles = ["FIRE_YEAR", "STATE", "FIRE_SIZE", "FIRE_SIZE_CLASS",
+                   "STAT_CAUSE_DESCR", "STAT_CAUSE_CODE", "MONTH",
+                   "DISCOVERY_TIME", "LATITUDE", "LONGITUDE"]
+
+    df_fires = pd.read_csv(target_file, usecols=cols_utiles, low_memory=False)
     return df_fires
-
-
-# Chargement réel — toute erreur ici est désormais visible à l'écran
-# au lieu de laisser un spinner tourner sans fin.
-try:
-    df_fires = load_data()
-except Exception as e:
-    st.error(f"❌ Erreur lors du chargement des données Kaggle : {e}")
-    st.stop()
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PAGE 1 — INTRODUCTION
@@ -139,10 +118,6 @@ if page == pages[0]:
                         "Latitude", "Longitude"],
         "Type":        ["int64", "datetime", "object", "float64", "object", "object", "float64", "float64"],
     }), use_container_width=True, hide_index=True)
-
-    with st.expander("👀 Aperçu des données chargées depuis Kaggle"):
-        st.dataframe(df_fires.head(10), use_container_width=True)
-        st.caption(f"{len(df_fires):,} lignes au total")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
