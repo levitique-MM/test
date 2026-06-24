@@ -2,25 +2,9 @@
 # IMPORTS
 # ══════════════════════════════════════════════════════════════════════════════
 
-#import matplotlib.pyplot as plt
-#import numpy as np
 import pandas as pd
-#import plotly.express as px
-#import seaborn as sns
 import streamlit as st
-import folium
-#import requests
-from streamlit_folium import st_folium
-#from sklearn.ensemble import RandomForestClassifier
-#from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-#from sklearn.model_selection import train_test_split
-#from sklearn.preprocessing import StandardScaler
-#from sklearn.tree import DecisionTreeClassifier
-#from xgboost import XGBClassifier
 import base64
-import kaggle
-import os
-import duckdb
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION PAGE
@@ -32,7 +16,6 @@ st.set_page_config(page_title="Feux de Forêt USA", layout="wide")
 st.sidebar.title("Sommaire")
 pages = [
     "Introduction",
-
     "Conclusion"
 ]
 page = st.sidebar.radio("Pages", pages)
@@ -40,137 +23,19 @@ st.sidebar.title("───────")
 st.sidebar.title("Coordonnées")
 st.sidebar.write("**Nom :** Lévitique MOUSSAVOU")
 st.sidebar.write("**Email :** [moussavoujl@yahoo.fr](moussavoujl@yahoo.fr)")
+
 with open("linkedin.png", "rb") as f:
     linkedin_logo = base64.b64encode(f.read()).decode()
 
-# Affiche le logo cliquable dans la sidebar
-    st.sidebar.markdown(
+st.sidebar.markdown(
     f'''<a href="https://www.linkedin.com/in/levitique-moussavou-90b634137/" target="_blank">
     Levitique   Moussavou   <img src="data:image/png;base64,{linkedin_logo}" width="30" style="vertical-align:middle; margin-right:8px;">     
      </a>''',
-     unsafe_allow_html=True
-    )
-#st.sidebar.write("**GitHub :** [Levitique](https://github.com/levitique-MM/nouveau)")
+    unsafe_allow_html=True
+)
+
 st.sidebar.title("──────")
-
 st.sidebar.write("**Liora - Datascientes 2025**")
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# CHARGEMENT & FONCTIONS CACHÉES
-# ══════════════════════════════════════════════════════════════════════════════
-
-#@st.cache_data
-#def load_data():
-#    df_fires      = pd.read_csv('./data/df_final.csv')
-#    df_meteo      = pd.read_csv('./data/df_meteo.csv')
-#    df_population = pd.read_csv('./data/df_population.csv')
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    return df_fires, df_meteo, df_population, df_vegetation
-
-
-
-#def download_dataset():
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     """Télécharge le dataset Kaggle si pas déjà présent."""
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    from kaggle.api.kaggle_api_extended import KaggleApi
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api = KaggleApi()
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api.set_config_value('username', st.secrets["kaggle"]["username"])
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api.set_config_value('key', st.secrets["kaggle"]["key"])
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api.authenticate()
-    
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    dataset = 'levitique/file-project'
-  #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#   path = './data'
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     os.makedirs(path, exist_ok=True)
-    
-  #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#   api.dataset_download_files(dataset, path=path, unzip=True)
-
-
-
-#def download_dataset():
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    from kaggle.api.kaggle_api_extended import KaggleApi
-    
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟡 Authentification Kaggle...")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api = KaggleApi()
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api.set_config_value('username', st.secrets["kaggle"]["username"])
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     api.set_config_value('key', st.secrets["kaggle"]["key"])
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    api.authenticate()
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟢 Authentifié avec succès")
-    
-    #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-# dataset = 'levitique/file-project'
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     path = './data'
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     os.makedirs(path, exist_ok=True)
-    
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     st.write("🟡 Téléchargement en cours (peut prendre plusieurs minutes)...")
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     api.dataset_download_files(dataset, path=path, unzip=True)
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟢 Téléchargement terminé")
-
-
-#@st.cache_data
-#def load_data():
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#     if not os.path.exists('./data/df_final.csv'):
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#        st.write("🟡 Fichiers absents, lancement du téléchargement...")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#        download_dataset()
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    else:
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#        st.write("🟢 Fichiers déjà présents en cache")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟡 Lecture des CSV...")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    df_fires      = pd.read_csv('./data/df_final.csv')
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write(f"🟢 df_fires chargé : {len(df_fires)} lignes")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    df_meteo      = pd.read_csv('./data/df_meteo.csv')
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟢 df_meteo chargé")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    df_population = pd.read_csv('./data/df_population.csv')
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟢 df_population chargé")
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    st.write("🟢 df_vegetation chargé")
-    
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    return df_fires, df_meteo, df_population, df_vegetation
-
-
- #    df_vegetation = pd.read_csv('./data/df_vegetation.csv')
-#    df_fires, df_meteo, df_population, df_vegetation = load_data()
-
-
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -221,10 +86,8 @@ if page == pages[0]:
     }), use_container_width=True, hide_index=True)
 
 
-
-
-#══════════════════════════════════════════════════════════════════════════════
-# PAGE 6 — CONCLUSION
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE 2 — CONCLUSION
 # ══════════════════════════════════════════════════════════════════════════════
 
 if page == pages[1]:
