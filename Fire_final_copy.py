@@ -5,9 +5,6 @@
 import pandas as pd
 import streamlit as st
 import base64
-import os
-import duckdb
-import kaggle 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION PAGE
@@ -40,47 +37,29 @@ st.sidebar.markdown(
 st.sidebar.title("──────")
 st.sidebar.write("**Liora - Datascientes 2025**")
 
+
 # ══════════════════════════════════════════════════════════════════════════════
-# IMPORT DATASET
+# IMPORT DATASET DEPUIS KAGGLE
+# Les identifiants ne sont JAMAIS écrits ici en clair.
+# Ils sont lus automatiquement depuis :
+#   - en local  : .streamlit/secrets.toml   (jamais poussé sur GitHub)
+#   - en cloud  : Streamlit Cloud > Settings > Secrets
 # ══════════════════════════════════════════════════════════════════════════════
 
-
+from KaggleAPIConnection import KaggleAPIConnection
 
 @st.cache_data
 def load_data():
-    os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
-    os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
-    
-    
-    
-    if not os.path.exists('./data/df_final.csv'):
-        os.makedirs('./data', exist_ok=True)
-        with st.spinner("Téléchargement des données depuis Kaggle (peut prendre 1-2 min)..."):
-            kaggle.api.authenticate()
-            kaggle.api.dataset_download_files(
-                'levitique/file-project',
-                path='./data',
-                unzip=True
-            )
-    
-    conn = duckdb.connect()
-    
-    # Ne charge QUE les colonnes nécessaires, pas tout le fichier
-    df_fires = conn.execute("""
-        SELECT FIRE_YEAR, STATE, FIRE_SIZE, FIRE_SIZE_CLASS,
-               STAT_CAUSE_DESCR, STAT_CAUSE_CODE, MONTH,
-               DISCOVERY_TIME, LATITUDE, LONGITUDE
-        FROM read_csv_auto('./data/df_final.csv')
-        WHERE FIRE_YEAR >= 2000
-    """).df()
-    
-    df_meteo = conn.execute("SELECT * FROM read_csv_auto('./data/df_meteo.csv')").df()
-    df_population = conn.execute("SELECT * FROM read_csv_auto('./data/df_population.csv')").df()
-    df_vegetation = conn.execute("SELECT * FROM read_csv_auto('./data/df_vegetation.csv')").df()
-    
-    conn.close()
-    return df_fires, df_meteo, df_population, df_vegetation
+    """
+    Télécharge et charge df_final.csv depuis Kaggle.
+    @st.cache_data évite de retélécharger à chaque interaction utilisateur.
+    """
+    conn = st.connection('kaggle', type=KaggleAPIConnection)
+    df_fires = conn.query('levitique/file-project', file='df_final.csv')
+    return df_fires
 
+
+df_fires = load_data()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -129,6 +108,10 @@ if page == pages[0]:
                         "Latitude", "Longitude"],
         "Type":        ["int64", "datetime", "object", "float64", "object", "object", "float64", "float64"],
     }), use_container_width=True, hide_index=True)
+
+    with st.expander("👀 Aperçu des données chargées depuis Kaggle"):
+        st.dataframe(df_fires.head(10), use_container_width=True)
+        st.caption(f"{len(df_fires):,} lignes au total")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
