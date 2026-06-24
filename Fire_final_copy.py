@@ -127,7 +127,7 @@ def load_data():
     return df_fires, df_meteo, df_population, df_vegetation
 
 
-df_fires, df_meteo, df_population, df_vegetation = load_data()
+    df_fires, df_meteo, df_population, df_vegetation = load_data()
 
 
 
