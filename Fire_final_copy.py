@@ -5,6 +5,9 @@
 import pandas as pd
 import streamlit as st
 import base64
+import os
+import duckdb
+import kaggle 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION PAGE
@@ -41,27 +44,28 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 # IMPORT DATASET
 # ══════════════════════════════════════════════════════════════════════════════
 
-import os
-import duckdb
+
 
 @st.cache_data
 def load_data():
-    os.environ['username'] = st.secrets["kaggle"]["username"]
-    os.environ['key'] = st.secrets["kaggle"]["key"]
+    os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
+    os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
     
     import kaggle
     
     if not os.path.exists('./data/df_final.csv'):
         os.makedirs('./data', exist_ok=True)
-        kaggle.api.authenticate()
-        kaggle.api.dataset_download_files(
-            'levitique/file-project',
-            path='./data',
-            unzip=True
-        )
+        with st.spinner("Téléchargement des données depuis Kaggle (peut prendre 1-2 min)..."):
+            kaggle.api.authenticate()
+            kaggle.api.dataset_download_files(
+                'levitique/file-project',
+                path='./data',
+                unzip=True
+            )
     
     conn = duckdb.connect()
     
+    # Ne charge QUE les colonnes nécessaires, pas tout le fichier
     df_fires = conn.execute("""
         SELECT FIRE_YEAR, STATE, FIRE_SIZE, FIRE_SIZE_CLASS,
                STAT_CAUSE_DESCR, STAT_CAUSE_CODE, MONTH,
@@ -70,16 +74,12 @@ def load_data():
         WHERE FIRE_YEAR >= 2000
     """).df()
     
-    df_meteo      = conn.execute("SELECT * FROM read_csv_auto('./data/df_meteo.csv')").df()
+    df_meteo = conn.execute("SELECT * FROM read_csv_auto('./data/df_meteo.csv')").df()
     df_population = conn.execute("SELECT * FROM read_csv_auto('./data/df_population.csv')").df()
     df_vegetation = conn.execute("SELECT * FROM read_csv_auto('./data/df_vegetation.csv')").df()
     
     conn.close()
     return df_fires, df_meteo, df_population, df_vegetation
-
-
-df_fires, df_meteo, df_population, df_vegetation = load_data()
-
 
 
 
