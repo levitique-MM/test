@@ -45,32 +45,32 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 # ══════════════════════════════════════════════════════════════════════════════
 
 
-@st.cache_data(show_spinner="Chargement des données depuis Kaggle...")
-def load_data():
-    os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
-    os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
-
-    from kaggle.api.kaggle_api_extended import KaggleApi
-
-    target_file = './data/df_final.csv'
-
-    if not os.path.exists(target_file):
-        os.makedirs('./data', exist_ok=True)
-        api = KaggleApi()
-        api.authenticate()
-        api.dataset_download_files(
-            'levitique/file-project',
-            path='./data',
-            unzip=True
-        )
+#@st.cache_data(show_spinner="Chargement des données depuis Kaggle...")
+#def load_data():
+#    os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle"]["username"]
+#    os.environ['KAGGLE_KEY'] = st.secrets["kaggle"]["key"]
+#
+ #   from kaggle.api.kaggle_api_extended import KaggleApi
+#
+ #   target_file = './data/df_final.csv'
+#
+ #   if not os.path.exists(target_file):
+  #      os.makedirs('./data', exist_ok=True)
+   #     api = KaggleApi()
+    #    api.authenticate()
+   #     api.dataset_download_files(
+    #        'levitique/file-project',
+     #       path='./data',
+      #      unzip=True
+       # )
 
     # Ne charge QUE les colonnes utiles, pas tout le fichier (économise la RAM)
-    cols_utiles = ["FIRE_YEAR", "STATE", "FIRE_SIZE", "FIRE_SIZE_CLASS",
-                   "STAT_CAUSE_DESCR", "STAT_CAUSE_CODE", "MONTH",
-                   "DISCOVERY_TIME", "LATITUDE", "LONGITUDE"]
+   # cols_utiles = ["FIRE_YEAR", "STATE", "FIRE_SIZE", "FIRE_SIZE_CLASS",
+    #               "STAT_CAUSE_DESCR", "STAT_CAUSE_CODE", "MONTH",
+     #              "DISCOVERY_TIME", "LATITUDE", "LONGITUDE"]
 
-    df_fires = pd.read_csv(target_file, usecols=cols_utiles, low_memory=False)
-    return df_fires
+    #df_fires = pd.read_csv(target_file, usecols=cols_utiles, low_memory=False)
+    #return df_fires
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PAGE 1 — INTRODUCTION
