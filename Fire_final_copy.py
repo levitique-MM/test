@@ -44,6 +44,33 @@ st.sidebar.write("**Liora - Datascientes 2025**")
 # IMPORT DATASET
 # ══════════════════════════════════════════════════════════════════════════════
 
+def download_dataset():
+    # Initialize Kaggle API client and authenticate using secrets
+    from kaggle.api.kaggle_api_extended import KaggleApi
+
+    api = KaggleApi()
+    api.set_config_value('username', st.secrets["kaggle"]["username"])
+    api.set_config_value('key', st.secrets["kaggle"]["key"])
+    api.authenticate()
+    
+    # Define the dataset and the path where files will be downloaded
+    dataset = './data/df_final.csv'
+    path = '.'
+
+    # Download the dataset
+    api.dataset_download_files(dataset, path=path, unzip=True)
+
+    import streamlit as st
+
+    if st.sidebar.button('Get Data', type="primary"):
+        download_dataset()
+    #The button will appear on a sidebar, otherwise you can use st.button
+
+    data = pd.read_csv("df_final.csv")
+#The dataset is now downloaded in the Streamlit environment
+
+
+
 
 #@st.cache_data(show_spinner="Chargement des données depuis Kaggle...")
 #def load_data():
